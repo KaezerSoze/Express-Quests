@@ -1,3 +1,22 @@
+// in movieHandlers.js
+const database = require("./database");
+const postUser = (req, res) => {
+  const { title, director, year, color, duration } = req.body;
+
+  database
+    .query(
+      "INSERT INTO users(title, director, year, color, duration) VALUES (?, ?, ?, ?, ?)",
+      [title, director, year, color, duration]
+    )
+    .then(([result]) => {
+      res.location(`/api/users/${result.insertId}`).sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error saving the movie");
+    });
+};
+
 const getUsers = (req, res) => {
   res.json(users);
   database
@@ -9,7 +28,7 @@ const getUsers = (req, res) => {
    });
 };
 
-const getUsersById = (req, res) => {
+const getUserById = (req, res) => {
   
 
   const id = parseInt(req.params.id);
@@ -42,5 +61,6 @@ const getUsersById = (req, res) => {
 
 module.exports = {
   getUsers,
-  getUsersById,
+  getUserById,
+  postUser, 
 };
